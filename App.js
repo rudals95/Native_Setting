@@ -1,27 +1,67 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import store from './src/store';
 import {Provider} from 'react-redux';
 
 import AppStatusBar from './src/components/AppStatusBar';
-// import SplashScreen from 'react-native-splash-screen';
 
 import {NavigationContainer} from '@react-navigation/native';
-import {Text, View} from 'react-native';
-import {width} from './src/globalStyles';
-import CustomIcon from './src/pages/CustomIcon';
+import {Platform, Text, View} from 'react-native';
+
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {Detail} from './src/pages/Detail';
+import {Main} from './src/pages/Main';
+import auth from '@react-native-firebase/auth';
+import Auth from './src/pages/Auth';
 
 const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const Stack = createNativeStackNavigator();
+
+  useEffect(() => {
+    auth().onAuthStateChanged(user => {
+      // console.log(user, 'user');
+      if (user) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    });
+  }, []);
+
   return (
     <Provider store={store}>
       <AppStatusBar />
-      <View style={{backgroundColor: '#ddf', flex: 1}}>
-        <CustomIcon name={'nav-left1'} size={width * 30} color={'#000'} />
-        <CustomIcon name={'sort'} size={width * 30} color={'#000'} />
-        <CustomIcon name={'more-vertical'} size={width * 30} color={'#000'} />
-        <CustomIcon name={'search'} size={width * 30} color={'#000'} />
-        <CustomIcon name={'calender'} size={width * 30} color={'#000'} />
-        <CustomIcon name={'settings'} size={width * 30} color={'#000'} />
-      </View>
+      {!isLoggedIn ? (
+        <Auth isLoggedIn={isLoggedIn} />
+      ) : (
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName={'Main'}
+            screenOptions={{
+              tabBarLabelStyle: {
+                fontSize: 18,
+                marginBottom: Platform.OS !== 'ios' ? 20 : 0,
+              },
+            }}>
+            <Stack.Screen
+              name="Main"
+              component={Main}
+              options={{
+                title: 'Main',
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Detail"
+              component={Detail}
+              options={{
+                title: 'Detail',
+                headerShown: false,
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      )}
     </Provider>
   );
 };

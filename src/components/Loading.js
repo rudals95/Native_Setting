@@ -56,23 +56,23 @@ function Slide() {
   );
 }
 
-export default function Loading() {
-  const store = useSelector(state => state.tabBar);
-
+export default function Loading({screenHeight, StatusBarHeight}) {
   return (
     <>
-      {store.tabBar && (
-        <View style={style.loading_con}>
-          <View style={style.loading_style}>
-            <View
-              style={{
-                width: width * 80,
-              }}>
-              <Slide />
-            </View>
+      <View
+        style={[
+          style.loading_con,
+          {height: screenHeight - StatusBarHeight, top: -height * 50},
+        ]}>
+        <View style={style.loading_style}>
+          <View
+            style={{
+              width: width * 80,
+            }}>
+            <Slide />
           </View>
         </View>
-      )}
+      </View>
     </>
   );
 }

@@ -1,5 +1,5 @@
-apply plugin: "com.android.application"
-
+    apply plugin: "com.android.application"
+    apply plugin: 'com.google.gms.google-services' // <- Add this line
 import com.android.build.OutputFile
 import org.apache.tools.ant.taskdefs.condition.Os
 
@@ -257,11 +257,15 @@ android {
 
         }
     }
+    apply plugin: "com.android.application"
+    apply plugin: 'com.google.gms.google-services' // <- Add this line
 }
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-
+    implementation platform('com.google.firebase:firebase-bom:32.2.2')//추가
+   
+    
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
